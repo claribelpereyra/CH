@@ -6,7 +6,7 @@
         "variedad": "60ml",
         "precio": 2500,
         "cantidad": 0,
-        "img": "img1.jpeg"
+        "img": "img1.jpg"
     },
     {
         "id": 2,
@@ -100,15 +100,6 @@
     },
     {
         "id": 12,
-        "nombre": "Ultra Vital Diurna",
-        "tipo": "Crema Facial",
-        "variedad": "100ml",
-        "precio": 1700,
-        "cantidad": 0,
-        "img": "img12.jpg"
-    },
-    {
-        "id": 13,
         "nombre": "[COMBO] PADs desmaquillantes",
         "tipo": "Cuidado Facial",
         "variedad": "2 unidades",
@@ -117,7 +108,7 @@
         "img": "img13.jpg"
     },
     {
-        "id": 14,
+        "id": 13,
         "nombre": "[COMBO] Conciente",
         "tipo": "PROMO",
         "variedad": "PROMO",
@@ -126,7 +117,7 @@
         "img": "img14.jpg"
     },
     {
-        "id": 15,
+        "id": 14,
         "nombre": "Esponja Corporal",
         "tipo": "Cuidado Corporal",
         "variedad": "30g",
@@ -135,7 +126,7 @@
         "img": "img15.jpg"
     },
     {
-        "id": 16,
+        "id": 15,
         "nombre": "Shampoo para cabello SECO",
         "tipo": "Cuidado Capilar",
         "variedad": "60g",
@@ -144,7 +135,7 @@
         "img": "img16.jpg"
     },
     {
-        "id": 17,
+        "id": 16,
         "nombre": "Shampoo para cabello MIXTO",
         "tipo": "Cuidado Capilar",
         "variedad": "60g",
@@ -153,7 +144,7 @@
         "img": "img17.jpg"
     },
     {
-        "id": 18,
+        "id": 17,
         "nombre": "Jabonera doble",
         "tipo": "Decoración",
         "variedad": "Madera",
@@ -162,7 +153,7 @@
         "img": "img18.jpg"
     },
     {
-        "id": 19,
+        "id": 18,
         "nombre": "[COMBO] Jabones x3]",
         "tipo": "Cuidado Corporal",
         "variedad": "180g",
@@ -171,7 +162,7 @@
         "img": "img19.jpeg"
     },
     {
-        "id": 20,
+        "id": 19,
         "nombre": "Jabon de arcilla",
         "tipo": "Cuidado Facial",
         "variedad": "40g",
@@ -180,7 +171,7 @@
         "img": "img21.jpeg"
     },
     {
-        "id": 21,
+        "id": 20,
         "nombre": "Bolsas reutilizables individuales",
         "tipo": "Decoración",
         "variedad": "3 unidades",
