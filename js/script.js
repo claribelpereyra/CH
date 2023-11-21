@@ -19,8 +19,6 @@ let btnOrdenarNombre = document.getElementById("ordenarNombre")
 let btnOrdenarMenorPrecio = document.getElementById("ordenarMenorPrecio")
 let btnOrdenarMayorPrecio = document.getElementById("ordenarMayorPrecio")
 let inputBuscador = document.getElementById("buscador")
-let inputEliminador = document.getElementById("eliminador")
-let btnEliminador = document.getElementById("eliminar")
 let btnCarrito = document.getElementById("btnCarrito")
 let btnCarrito2 = document.getElementById("btnCarrito2")
 let btnCarrito3 = document.getElementById("btnCarrito3")
@@ -35,13 +33,11 @@ let resultadoTextoOrdenar = document.getElementById("resultadoTextoOrdenar")
 
 //EVENTOS
 
-btnNuevoProducto.addEventListener("click", () => { agregarNuevoProducto(eshop) })
 btnOrdenarId.addEventListener('click', () => { ordenarId(eshop) })
 btnOrdenarNombre.addEventListener('click', () => { ordenarNombre(eshop) })
 btnOrdenarMenorPrecio.addEventListener('click', () => { ordenarMenorMayor(eshop) })
 btnOrdenarMayorPrecio.addEventListener('click', () => { ordenarMayorMenor(eshop) })
 inputBuscador.addEventListener('input', () => { buscador(inputBuscador.value, eshop) })
-btnEliminador.addEventListener('click', () => { removerProducto(eshop) })
 btnCarrito.addEventListener("click", () => { cargarProductosCarrito(productosEnCarrito) })
 btnCarrito2.addEventListener("click", () => { cargarProductosCarrito(productosEnCarrito) })
 btnCarrito3.addEventListener("click", () => { cargarProductosCarrito(productosEnCarrito) })
@@ -95,42 +91,6 @@ function mostrarCatalogo(array) {
         })
     }
 }
-
-//Crear nuevo producto
-
-function agregarNuevoProducto(array) {
-    let inputNombre = document.getElementById("inputNombre")
-    let inputTipo = document.getElementById("inputTipo")
-    let inputVariedad = document.getElementById("inputVariedad")
-    let inputPrecio = document.getElementById("inputPrecio")
-    if (inputNombre.value == "" || inputTipo.value == "" || inputVariedad.value == "" || inputPrecio.value == NaN) {
-        Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: 'Por favor complete todos los campos. El precio solo admite numeros.',
-            timer: 3000
-        })
-    } else {
-        array.sort((a, b) => a.id - b.id)
-        let newArray = array.slice()
-        let newId = newArray.pop().id + 1
-        let productoCreado = new Producto(newId, inputNombre.value, inputTipo.value, inputVariedad.value, parseInt(inputPrecio.value), 0, "img1.jpg")
-        array.push(productoCreado)
-        localStorage.setItem("eshop", JSON.stringify(array))
-        mostrarCatalogo(array)
-        Swal.fire({
-            icon: 'success',
-            title: `Producto agregado con el numero de identificacion ${productoCreado.id}`,
-            showConfirmButton: false,
-            timer: 1500
-        })
-    }
-    inputNombre.value = ""
-    inputTipo.value = ""
-    inputVariedad.value = ""
-    inputPrecio.value = ""
-}
-
 
 //Funciones Ordenar
 
@@ -202,30 +162,6 @@ function buscador(buscado, array) {
         (elem) => elem.nombre.toLowerCase().includes(buscado.toLowerCase()) || elem.tipo.toLowerCase().includes(buscado.toLowerCase()) || elem.variedad.toLowerCase().includes(buscado.toLowerCase()) || [elem.precio].includes(parseInt(buscado)) || [elem.id].includes(parseInt(buscado)))
     busqueda.length == 0 ? (resultadoTexto.innerHTML = `<h6 class="text-success m-2">No hay coincidencias con su búsqueda... `)
         : (section2.innerHTML = "", mostrarCatalogo(busqueda))
-}
-
-//Function remover producto
-
-function removerProducto(array) {
-    let ids = array.map(elem => elem.id)
-    let indice = ids.indexOf(parseInt(inputEliminador.value))
-    if (indice != -1) {
-        array.splice(indice, 1)
-        Swal.fire({
-            icon: 'success',
-            title: `Producto Nº ${inputEliminador.value} removido`,
-            showConfirmButton: false,
-            timer: 1500
-        })
-    } else {
-        Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: 'El Nro de ID ingresado es invalido',
-        })
-    }
-    localStorage.setItem("eshop", JSON.stringify(array))
-    mostrarCatalogo(array)
 }
 
 //------Carrito
@@ -325,44 +261,79 @@ function cargarProductosCarrito(array) {
     compraTotal(array)
 }
 
+//Compra total
+
 function compraTotal(array) {
     let acumulador = 0
     acumulador = array.reduce((acc, productoCarrito) => acc + (productoCarrito.precio * productoCarrito.cantidad), 0)
     acumulador == 0 ? divCompra.innerHTML = `No hay productos en el carrito` : divCompra.innerHTML = `<p class="totalCompraTexto">EL total de su compra es $${acumulador}</p>`
 }
 
-//Funcion Finalizar Compra
+// Finalizar Compra
 
 function finalizarCompra() {
     if (productosEnCarrito == "") {
-        Swal.fire('No hay productos en el carrito')
+        Swal.fire('No hay productos en el carrito');
     } else {
         Swal.fire({
-            title: 'Esta seguro?',
+            title: '¿Está seguro?',
             showDenyButton: true,
             showCancelButton: true,
             confirmButtonText: 'Comprar',
             confirmButtonColor: 'blue',
-            denyButtonText: `Volver`,
+            denyButtonText: 'Volver',
         }).then((result) => {
             if (result.isConfirmed) {
-                Swal.fire('Gracias por comprar con nosotros!', '', 'success')
-                productosEnCarrito.forEach((producto) => {
-                    let cardProducto = document.getElementById(`productoCarrito${producto.id}`)
-                    cardProducto.remove()
-                })
-                productosEnCarrito = []
-                localStorage.setItem('carrito', JSON.stringify(productosEnCarrito))
-                compraTotal(productosEnCarrito)
-                eshop.forEach((elemento) => {
-                    elemento.cantidad = 0
-                })
-                localStorage.setItem("eshop", JSON.stringify(eshop))
+                // Abrir un nuevo modal para completar los datos
+                Swal.fire({
+                    title: 'Confirmar Compra',
+                    html:
+                        '<label for="nombre">Nombre:</label>' +
+                        '<input type="text" id="nombre" class="swal2-input" required>' +
+                        '<label for="tarjeta">Número de Tarjeta:</label>' +
+                        '<input type="text" id="tarjeta" class="swal2-input" required>',
+                    showDenyButton: true,
+                    showCancelButton: true,
+                    confirmButtonText: 'Finalizar Compra',
+                    confirmButtonColor: 'blue',
+                    denyButtonText: 'Volver',
+                    focusDeny: true,
+                    allowOutsideClick: false,  // Evita que se haga clic fuera del modal
+                    didOpen: () => {
+                        // Habilitar la escritura en los campos del nuevo modal
+                        Swal.getPopup().querySelector('#nombre').focus();
+                    },
+                    preConfirm: () => {
+                        const nombreUsuario = Swal.getPopup().querySelector('#nombre').value;
+                        const numeroTarjeta = Swal.getPopup().querySelector('#tarjeta').value;
+
+                        if (!nombreUsuario || !numeroTarjeta) {
+                            Swal.showValidationMessage('Por favor, complete todos los campos.');
+                        }
+
+                        // Aquí puedes realizar la lógica de procesamiento de la compra con los datos proporcionados.
+                        // Si todo está bien, puedes mostrar un mensaje de éxito.
+
+                        // Simulación: Mostrar mensaje de éxito.
+                        Swal.fire('Compra procesada con éxito. ¡Gracias por comprar con nosotros!', '', 'success');
+                    },
+                });
             } else if (result.isDenied) {
-                Swal.fire('No se ha efectuado la compra', '', 'info')
+                Swal.fire('No se ha efectuado la compra', '', 'info');
             }
-        })
+        });
     }
+}
+
+//Limpiar carrito
+function limpiarCarritoYProductos() {
+    productosEnCarrito = [];
+    localStorage.setItem('carrito', JSON.stringify(productosEnCarrito));
+
+    eshop.forEach((elemento) => {
+        elemento.cantidad = 0;
+    });
+    localStorage.setItem('eshop', JSON.stringify(eshop));
 }
 
 setTimeout(() => {
