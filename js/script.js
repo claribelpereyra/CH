@@ -272,52 +272,36 @@ function compraTotal(array) {
 // Finalizar Compra
 
 function finalizarCompra() {
-    if (productosEnCarrito == "") {
+    if (productosEnCarrito.length === 0) {
         Swal.fire('No hay productos en el carrito');
     } else {
         Swal.fire({
-            title: '¿Está seguro?',
+            title: '¡Ya casi es tuyo!',
+            html: `
+                <form id="formularioCompra">
+                    <label for="nombre">Nombre:</label>
+                    <input type="text" id="nombre" class="swal2-input" required>
+                    <label for="tarjeta">Número de Tarjeta:</label>
+                    <input type="text" id="tarjeta" class="swal2-input" required>
+                </form>`,
+            confirmButtonText: 'Finalizar Compra',
             showDenyButton: true,
-            showCancelButton: true,
-            confirmButtonText: 'Comprar',
-            confirmButtonColor: 'blue',
             denyButtonText: 'Volver',
+            preConfirm: () => {
+                const nombreUsuario = Swal.getPopup().querySelector('#nombre').value;
+                const numeroTarjeta = Swal.getPopup().querySelector('#tarjeta').value;
+
+                if (!nombreUsuario || !numeroTarjeta) {
+                    Swal.showValidationMessage('Por favor, completa todos los campos.');
+                }
+
+                return { nombreUsuario, numeroTarjeta };
+            },
         }).then((result) => {
             if (result.isConfirmed) {
-                // Abrir un nuevo modal para completar los datos
-                Swal.fire({
-                    title: 'Confirmar Compra',
-                    html:
-                        '<label for="nombre">Nombre:</label>' +
-                        '<input type="text" id="nombre" class="swal2-input" required>' +
-                        '<label for="tarjeta">Número de Tarjeta:</label>' +
-                        '<input type="text" id="tarjeta" class="swal2-input" required>',
-                    showDenyButton: true,
-                    showCancelButton: true,
-                    confirmButtonText: 'Finalizar Compra',
-                    confirmButtonColor: 'blue',
-                    denyButtonText: 'Volver',
-                    focusDeny: true,
-                    allowOutsideClick: false,  // Evita que se haga clic fuera del modal
-                    didOpen: () => {
-                        // Habilitar la escritura en los campos del nuevo modal
-                        Swal.getPopup().querySelector('#nombre').focus();
-                    },
-                    preConfirm: () => {
-                        const nombreUsuario = Swal.getPopup().querySelector('#nombre').value;
-                        const numeroTarjeta = Swal.getPopup().querySelector('#tarjeta').value;
+                limpiarCarritoYProductos();
 
-                        if (!nombreUsuario || !numeroTarjeta) {
-                            Swal.showValidationMessage('Por favor, complete todos los campos.');
-                        }
-
-                        // Aquí puedes realizar la lógica de procesamiento de la compra con los datos proporcionados.
-                        // Si todo está bien, puedes mostrar un mensaje de éxito.
-
-                        // Simulación: Mostrar mensaje de éxito.
-                        Swal.fire('Compra procesada con éxito. ¡Gracias por comprar con nosotros!', '', 'success');
-                    },
-                });
+                Swal.fire('Compra finalizada. ¡Gracias por comprar con nosotros!', '', 'success');
             } else if (result.isDenied) {
                 Swal.fire('No se ha efectuado la compra', '', 'info');
             }
@@ -325,7 +309,6 @@ function finalizarCompra() {
     }
 }
 
-//Limpiar carrito
 function limpiarCarritoYProductos() {
     productosEnCarrito = [];
     localStorage.setItem('carrito', JSON.stringify(productosEnCarrito));
@@ -339,5 +322,4 @@ function limpiarCarritoYProductos() {
 setTimeout(() => {
     loader.innerHTML = ""
     mostrarCatalogo(eshop)
-}, 1000)
-
+}, 1000);
